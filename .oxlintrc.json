@@ -1,0 +1,88 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/toolbelt/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "../auth",
+                  "../../auth",
+                  "../auth/**",
+                  "../../auth/**",
+                  "../chat",
+                  "../../chat",
+                  "../chat/**",
+                  "../../chat/**"
+                ],
+                "message": "toolbelt must not depend on app modules."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/auth/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["../chat", "../../chat", "../chat/**", "../../chat/**"],
+                "message": "auth must not depend on chat."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/chat/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["../auth", "../../auth", "../auth/**", "../../auth/**"],
+                "message": "chat must not depend on auth; App passes it the API client."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/*.ts", "src/*.tsx"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["./auth/**", "./chat/**"],
+                "message": "Import modules through their public index."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
